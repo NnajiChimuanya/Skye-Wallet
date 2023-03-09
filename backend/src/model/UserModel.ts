@@ -22,11 +22,13 @@ const userSchema = new Schema({
     required: [true, "Password required"],
   },
   paymentId: [String],
+  balance: Number,
 });
 
 userSchema.pre<IUser>("save", async function (next) {
   let payId = await uuidv4();
   this.paymentId.push(payId);
+  this.balance = 5000;
   next();
 });
 

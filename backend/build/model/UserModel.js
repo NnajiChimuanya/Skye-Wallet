@@ -34,11 +34,13 @@ const userSchema = new Schema({
         required: [true, "Password required"],
     },
     paymentId: [String],
+    balance: Number,
 });
 userSchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         let payId = yield (0, uuid_1.v4)();
         this.paymentId.push(payId);
+        this.balance = 5000;
         next();
     });
 });

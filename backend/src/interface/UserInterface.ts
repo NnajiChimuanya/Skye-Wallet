@@ -6,6 +6,7 @@ interface IUser extends Document {
   phoneNumber: string;
   password: string;
   paymentId: string[];
+  balance: number;
 }
 
 export default IUser;
