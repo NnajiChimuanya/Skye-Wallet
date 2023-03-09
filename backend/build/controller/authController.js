@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signup = void 0;
+exports.signin = exports.signup = void 0;
 const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ErrorHandler_1 = require("../utils/ErrorHandler");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,3 +39,26 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signup = signup;
+const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    let client = yield UserModel_1.default.findOne({ email });
+    try {
+        if (client) {
+            if (password === (client === null || client === void 0 ? void 0 : client.password)) {
+                console.log("Found user");
+                res.json(client);
+            }
+            else {
+                throw Error("Invalid password");
+            }
+        }
+        else {
+            throw Error("Email not found");
+        }
+    }
+    catch (err) {
+        let error = (0, ErrorHandler_1.handleError)(err);
+        res.json(error);
+    }
+});
+exports.signin = signin;

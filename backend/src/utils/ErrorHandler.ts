@@ -31,5 +31,17 @@ export const handleError = (err: any) => {
     };
   }
 
+  if (err.message === "Email not found") {
+    error = {
+      error: "email does not exist",
+    };
+  }
+
+  if (err.message === "Invalid password") {
+    error = {
+      error: "Invalid password",
+    };
+  }
+
   return error;
 };

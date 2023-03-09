@@ -7,4 +7,5 @@ const express_1 = __importDefault(require("express"));
 const authController_1 = require("../controller/authController");
 const authRouter = express_1.default.Router();
 authRouter.post("/signup", authController_1.signup);
+authRouter.post("/signin", authController_1.signin);
 exports.default = authRouter;

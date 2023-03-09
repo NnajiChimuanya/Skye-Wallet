@@ -26,3 +26,25 @@ export const signup = async (req: Request, res: Response) => {
     res.json(error);
   }
 };
+
+export const signin = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  let client = await user.findOne({ email });
+
+  try {
+    if (client) {
+      if (password === client?.password) {
+        console.log("Found user");
+        res.json(client);
+      } else {
+        throw Error("Invalid password");
+      }
+    } else {
+      throw Error("Email not found");
+    }
+  } catch (err: any) {
+    let error = handleError(err);
+    res.json(error);
+  }
+};
