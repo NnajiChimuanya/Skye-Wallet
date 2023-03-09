@@ -8,6 +8,7 @@ dotenv.config();
 
 import mongoose from "mongoose";
 import authRouter from "./routes/authRouter";
+import userRouter from "./controller/userRouter";
 
 if (cluster.isMaster) {
   const cpus = os.cpus().length;
@@ -37,6 +38,7 @@ if (cluster.isMaster) {
   });
 
   app.use("/auth", authRouter);
+  app.use("/user", userRouter);
 
   mongoose
     .connect(process.env.mongo_uri)

@@ -10,6 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const mongoose_1 = __importDefault(require("mongoose"));
 const authRouter_1 = __importDefault(require("./routes/authRouter"));
+const userRouter_1 = __importDefault(require("./controller/userRouter"));
 if (cluster_1.default.isMaster) {
     const cpus = os_1.default.cpus().length;
     console.log(`Forking for ${cpus}`);
@@ -34,6 +35,7 @@ else {
         res.send("Skye Wallet user microservice");
     });
     app.use("/auth", authRouter_1.default);
+    app.use("/user", userRouter_1.default);
     mongoose_1.default
         .connect(process.env.mongo_uri)
         .then(() => console.log("connected to the database"))

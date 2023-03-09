@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import IUser from "../interface/UserInterface";
 import Schema = mongoose.Schema;
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate } from "uuid";
 
 const userSchema = new Schema({
   name: {
@@ -21,15 +21,10 @@ const userSchema = new Schema({
     type: String,
     required: [true, "Password required"],
   },
-  paymentId: [String],
+  paymentId: {
+    type: [String],
+  },
   balance: Number,
-});
-
-userSchema.pre<IUser>("save", async function (next) {
-  let payId = await uuidv4();
-  this.paymentId.push(payId);
-  this.balance = 5000;
-  next();
 });
 
 const user = mongoose.model<IUser>("user", userSchema);

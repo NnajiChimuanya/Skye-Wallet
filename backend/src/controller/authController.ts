@@ -2,16 +2,19 @@ import { Request, Response } from "express";
 import user from "../model/UserModel";
 import IUser from "../interface/UserInterface";
 import { handleError } from "../utils/ErrorHandler";
+import { v4 as uuidv4 } from "uuid";
 
 export const signup = async (req: Request, res: Response) => {
   const { name, email, phoneNumber, password } = req.body;
 
   try {
     let newUser = await user.create({
-      name,
-      email,
-      phoneNumber,
-      password,
+      name: name,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      paymentId: [uuidv4()],
+      balance: 5000,
     });
 
     if (newUser) {
@@ -22,6 +25,7 @@ export const signup = async (req: Request, res: Response) => {
       });
     }
   } catch (err: any) {
+    console.log(err);
     let error = handleError(err);
     res.json(error);
   }

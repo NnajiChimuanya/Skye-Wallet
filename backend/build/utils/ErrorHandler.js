@@ -38,6 +38,11 @@ const handleError = (err) => {
             error: "Invalid password",
         };
     }
+    if (err.message.includes("Maximum of 5 payIds and minimum of 1 allowed")) {
+        error = {
+            error: "Maximum of 5 payIds and minimum of 1 allowed",
+        };
+    }
     return error;
 };
 exports.handleError = handleError;
