@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateNewId = void 0;
+exports.deleteId = exports.generateNewId = void 0;
 const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ErrorHandler_1 = require("../utils/ErrorHandler");
 const uuid_1 = require("uuid");
@@ -35,6 +35,7 @@ const generateNewId = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 }
                 else {
                     res.json({
+                        status: "error",
                         error: "Maximum amount of Payment Id created",
                     });
                 }
@@ -48,8 +49,65 @@ const generateNewId = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (err) {
-        let error = (0, ErrorHandler_1.handleError)(err);
-        res.json(error);
+        let errorMessage = (0, ErrorHandler_1.handleError)(err);
+        res.json({
+            status: "error",
+            error: errorMessage,
+        });
     }
 });
 exports.generateNewId = generateNewId;
+const deleteId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password, id } = req.body;
+    let client = yield UserModel_1.default.findOne({ email });
+    try {
+        if (client) {
+            if (password === (client === null || client === void 0 ? void 0 : client.password)) {
+                if (client.paymentId.length > 1) {
+                    let indexOfId = client.paymentId.indexOf(id);
+                    console.log(indexOfId);
+                    if (indexOfId >= 0) {
+                        let popped = client.paymentId.splice(indexOfId, 1);
+                        console.log(client.paymentId);
+                        client
+                            .save()
+                            .then((data) => res.json({
+                            status: "success",
+                            paymentId: client === null || client === void 0 ? void 0 : client.paymentId,
+                        }))
+                            .catch((err) => {
+                            let errorMessage = (0, ErrorHandler_1.handleError)(err);
+                            res.json({
+                                status: "error",
+                                error: errorMessage,
+                            });
+                        });
+                    }
+                    else {
+                        throw Error("Id does not exist");
+                    }
+                }
+                else {
+                    res.json({
+                        status: "error",
+                        error: "Minimum 1 payment Id required",
+                    });
+                }
+            }
+            else {
+                throw Error("Invalid password");
+            }
+        }
+        else {
+            throw Error("Email not found");
+        }
+    }
+    catch (err) {
+        let errorMessage = (0, ErrorHandler_1.handleError)(err);
+        res.json({
+            status: "error",
+            error: errorMessage,
+        });
+    }
+});
+exports.deleteId = deleteId;

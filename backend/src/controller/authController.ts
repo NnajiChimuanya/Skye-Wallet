@@ -25,9 +25,11 @@ export const signup = async (req: Request, res: Response) => {
       });
     }
   } catch (err: any) {
-    console.log(err);
-    let error = handleError(err);
-    res.json(error);
+    let errorMessage = handleError(err);
+    res.json({
+      status: "error",
+      error: errorMessage,
+    });
   }
 };
 
@@ -48,7 +50,10 @@ export const signin = async (req: Request, res: Response) => {
       throw Error("Email not found");
     }
   } catch (err: any) {
-    let error = handleError(err);
-    res.json(error);
+    let errorMessage = handleError(err);
+    res.json({
+      status: "error",
+      error: errorMessage,
+    });
   }
 };

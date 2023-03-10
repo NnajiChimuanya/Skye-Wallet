@@ -1,52 +1,40 @@
 export const handleError = (err: any) => {
-  let error = { error: "An error occured" };
+  let error = "An error occurred";
 
   if (err.code === 11000) {
-    error = {
-      error: "Email already exists",
-    };
+    error = "Email already exists";
   }
 
   if (err.message.includes("name required")) {
-    error = {
-      error: "please enter Name",
-    };
+    error = "please enter Name";
   }
 
   if (err.message.includes("Email required")) {
-    error = {
-      error: "please enter Email",
-    };
+    error = "please enter Email";
   }
 
   if (err.message.includes("Phone number required")) {
-    error = {
-      error: "please enter Phone number",
-    };
+    error = "please enter Phone number";
   }
 
   if (err.message.includes("Password required")) {
-    error = {
-      error: "please enter Password",
-    };
+    error = "please enter Password";
   }
 
   if (err.message === "Email not found") {
-    error = {
-      error: "email does not exist",
-    };
+    error = "email does not exist";
   }
 
   if (err.message === "Invalid password") {
-    error = {
-      error: "Invalid password",
-    };
+    error = "Invalid password";
   }
 
   if (err.message.includes("Maximum of 5 payIds and minimum of 1 allowed")) {
-    error = {
-      error: "Maximum of 5 payIds and minimum of 1 allowed",
-    };
+    error = "Maximum of 5 payIds and minimum of 1 allowed";
+  }
+
+  if (err.message === "Id does not exist") {
+    error = "Id does not exist";
   }
 
   return error;

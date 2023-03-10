@@ -37,9 +37,11 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     catch (err) {
-        console.log(err);
-        let error = (0, ErrorHandler_1.handleError)(err);
-        res.json(error);
+        let errorMessage = (0, ErrorHandler_1.handleError)(err);
+        res.json({
+            status: "error",
+            error: errorMessage,
+        });
     }
 });
 exports.signup = signup;
@@ -61,8 +63,11 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     catch (err) {
-        let error = (0, ErrorHandler_1.handleError)(err);
-        res.json(error);
+        let errorMessage = (0, ErrorHandler_1.handleError)(err);
+        res.json({
+            status: "error",
+            error: errorMessage,
+        });
     }
 });
 exports.signin = signin;
