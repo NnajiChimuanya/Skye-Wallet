@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import user from "../model/UserModel";
 import IUser from "../interface/UserInterface";
 import { handleError } from "../utils/ErrorHandler";
-import { v4 as uuidv4 } from "uuid";
+import { paymentIdGenerator } from "../utils/paymentIdGenerator";
 
 export const signup = async (req: Request, res: Response) => {
   const { name, email, phoneNumber, password } = req.body;
@@ -13,7 +13,7 @@ export const signup = async (req: Request, res: Response) => {
       email: email,
       phoneNumber: phoneNumber,
       password: password,
-      paymentId: [uuidv4()],
+      paymentId: [paymentIdGenerator()],
       balance: 5000,
     });
 

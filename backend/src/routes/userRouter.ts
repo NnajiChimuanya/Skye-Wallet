@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import user from "../model/UserModel";
 import { handleError } from "../utils/ErrorHandler";
-import { v4 as uuidv4 } from "uuid";
+import { paymentIdGenerator } from "../utils/paymentIdGenerator";
 
 export const generateNewId = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -12,11 +12,16 @@ export const generateNewId = async (req: Request, res: Response) => {
     if (client) {
       if (password === client?.password) {
         if (client.paymentId.length <= 4) {
-          let newId = await uuidv4();
+          let newId = await paymentIdGenerator();
           client.paymentId.push(newId);
           client
             .save()
-            .then((data) => res.json(data))
+            .then((data) =>
+              res.json({
+                status: "success",
+                paymentId: client?.paymentId,
+              })
+            )
             .catch((err: any) => {
               let error = handleError(err);
               res.json(error);

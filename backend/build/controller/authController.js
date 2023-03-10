@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.signin = exports.signup = void 0;
 const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ErrorHandler_1 = require("../utils/ErrorHandler");
-const uuid_1 = require("uuid");
+const paymentIdGenerator_1 = require("../utils/paymentIdGenerator");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, phoneNumber, password } = req.body;
     try {
@@ -24,7 +24,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             email: email,
             phoneNumber: phoneNumber,
             password: password,
-            paymentId: [(0, uuid_1.v4)()],
+            paymentId: [(0, paymentIdGenerator_1.paymentIdGenerator)()],
             balance: 5000,
         });
         if (newUser) {
