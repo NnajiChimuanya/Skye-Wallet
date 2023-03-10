@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteId = exports.generateNewId = void 0;
+exports.searchById = exports.deleteId = exports.generateNewId = void 0;
 const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ErrorHandler_1 = require("../utils/ErrorHandler");
 const paymentIdGenerator_1 = require("../utils/paymentIdGenerator");
@@ -114,3 +114,31 @@ const deleteId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deleteId = deleteId;
+const searchById = (req, res) => {
+    const { id } = req.body;
+    UserModel_1.default
+        .findOne({
+        paymentId: {
+            $in: [id],
+        },
+    })
+        .then((data) => {
+        if (data) {
+            res.json(data);
+        }
+        else {
+            res.json({
+                status: "error",
+                error: "User not found",
+            });
+        }
+    })
+        .catch((err) => {
+        let errorMessage = (0, ErrorHandler_1.handleError)(err);
+        res.json({
+            status: "error",
+            error: errorMessage,
+        });
+    });
+};
+exports.searchById = searchById;

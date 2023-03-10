@@ -101,3 +101,31 @@ export const deleteId = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const searchById = (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  user
+    .findOne({
+      paymentId: {
+        $in: [id],
+      },
+    })
+    .then((data) => {
+      if (data) {
+        res.json(data);
+      } else {
+        res.json({
+          status: "error",
+          error: "User not found",
+        });
+      }
+    })
+    .catch((err: any) => {
+      let errorMessage = handleError(err);
+      res.json({
+        status: "error",
+        error: errorMessage,
+      });
+    });
+};

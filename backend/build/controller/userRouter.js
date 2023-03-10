@@ -8,4 +8,5 @@ const userRouter_1 = require("../routes/userRouter");
 const userRouter = express_1.default.Router();
 userRouter.post("/generateNewId", userRouter_1.generateNewId);
 userRouter.post("/deleteId", userRouter_1.deleteId);
+userRouter.post("/searchById", userRouter_1.searchById);
 exports.default = userRouter;
