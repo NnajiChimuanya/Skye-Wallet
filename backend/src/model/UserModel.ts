@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import IUser from "../interface/UserInterface";
 import Schema = mongoose.Schema;
-import { v4 as uuidv4, validate } from "uuid";
 
 const userSchema = new Schema({
   name: {

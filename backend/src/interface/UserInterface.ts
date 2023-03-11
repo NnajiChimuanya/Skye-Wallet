@@ -1,5 +1,3 @@
-import { ObjectId } from "mongoose";
-
 interface IUser extends Document {
   name: string;
   email: string;

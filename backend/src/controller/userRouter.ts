@@ -4,6 +4,7 @@ import {
   deleteId,
   searchById,
   sendFunds,
+  getTransactions,
 } from "../routes/userRouter";
 
 const userRouter: Router = express.Router();
@@ -16,4 +17,5 @@ userRouter.post("/searchById", searchById);
 
 userRouter.post("/sendFunds", sendFunds);
 
+userRouter.get("/getTransactions", getTransactions);
 export default userRouter;

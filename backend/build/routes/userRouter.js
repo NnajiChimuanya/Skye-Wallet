@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendFunds = exports.searchById = exports.deleteId = exports.generateNewId = void 0;
+exports.getTransactions = exports.sendFunds = exports.searchById = exports.deleteId = exports.generateNewId = void 0;
 const UserModel_1 = __importDefault(require("../model/UserModel"));
+const TransactionModel_1 = __importDefault(require("../model/TransactionModel"));
 const ErrorHandler_1 = require("../utils/ErrorHandler");
 const paymentIdGenerator_1 = require("../utils/paymentIdGenerator");
 const generateNewId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -164,7 +165,7 @@ const sendFunds = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             client
                                 .save()
                                 .then((data) => {
-                                console.log(`${data.email} sent ${amount} to ${recipientId}`);
+                                //   console.log(`${data.email} sent ${amount} to ${recipientId}`);
                             })
                                 .catch((err) => {
                                 let errorMessage = (0, ErrorHandler_1.handleError)(err);
@@ -177,11 +178,9 @@ const sendFunds = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                                 recipient
                                     .save()
                                     .then((data) => {
-                                    console.log(`${recipientId} has recieved ${amount} from ${email}`);
-                                    res.json({
-                                        status: "success",
-                                        message: "Transaction successful",
-                                    });
+                                    // console.log(
+                                    //   `${recipientId} has recieved ${amount} from ${email}`
+                                    // );
                                 })
                                     .catch((err) => {
                                     let errorMessage = (0, ErrorHandler_1.handleError)(err);
@@ -189,6 +188,19 @@ const sendFunds = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                                         status: "failed",
                                         error: errorMessage,
                                     });
+                                });
+                                //Creating the transaction history
+                                let newTransaction = yield TransactionModel_1.default.create({
+                                    emails: [client.email, recipient.email],
+                                    senderEmail: client.email,
+                                    recieverEmail: recipient.email,
+                                    recieverId: recipientId,
+                                    amount: amount,
+                                    dateOfTransaction: new Date().toUTCString(),
+                                });
+                                res.json({
+                                    status: "success",
+                                    message: "Transaction successful",
                                 });
                             }
                             catch (err) {
@@ -237,3 +249,42 @@ const sendFunds = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.sendFunds = sendFunds;
+const getTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    let client = yield UserModel_1.default.findOne({ email });
+    try {
+        if (client) {
+            if (password === (client === null || client === void 0 ? void 0 : client.password)) {
+                let transactionHistory = yield TransactionModel_1.default.find({
+                    emails: { $in: [email] },
+                });
+                if (transactionHistory) {
+                    res.json({
+                        status: "success",
+                        data: transactionHistory,
+                    });
+                }
+                else {
+                    res.json({
+                        status: "failed",
+                        error: "couldnt fetch transactions",
+                    });
+                }
+            }
+            else {
+                throw Error("Invalid password");
+            }
+        }
+        else {
+            throw Error("Email not found");
+        }
+    }
+    catch (err) {
+        let errorMessage = (0, ErrorHandler_1.handleError)(err);
+        res.json({
+            status: "error",
+            error: errorMessage,
+        });
+    }
+});
+exports.getTransactions = getTransactions;

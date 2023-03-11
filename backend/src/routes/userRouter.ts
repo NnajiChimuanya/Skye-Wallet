@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import user from "../model/UserModel";
+import transactions from "../model/TransactionModel";
 import { handleError } from "../utils/ErrorHandler";
 import { paymentIdGenerator } from "../utils/paymentIdGenerator";
 
@@ -157,7 +158,7 @@ export const sendFunds = async (req: Request, res: Response) => {
               client
                 .save()
                 .then((data) => {
-                  console.log(`${data.email} sent ${amount} to ${recipientId}`);
+                  //   console.log(`${data.email} sent ${amount} to ${recipientId}`);
                 })
                 .catch((err: any) => {
                   let errorMessage = handleError(err);
@@ -171,13 +172,9 @@ export const sendFunds = async (req: Request, res: Response) => {
                 recipient
                   .save()
                   .then((data) => {
-                    console.log(
-                      `${recipientId} has recieved ${amount} from ${email}`
-                    );
-                    res.json({
-                      status: "success",
-                      message: "Transaction successful",
-                    });
+                    // console.log(
+                    //   `${recipientId} has recieved ${amount} from ${email}`
+                    // );
                   })
                   .catch((err: any) => {
                     let errorMessage = handleError(err);
@@ -186,6 +183,21 @@ export const sendFunds = async (req: Request, res: Response) => {
                       error: errorMessage,
                     });
                   });
+
+                //Creating the transaction history
+                let newTransaction = await transactions.create({
+                  emails: [client.email, recipient.email],
+                  senderEmail: client.email,
+                  recieverEmail: recipient.email,
+                  recieverId: recipientId,
+                  amount: amount,
+                  dateOfTransaction: new Date().toUTCString(),
+                });
+
+                res.json({
+                  status: "success",
+                  message: "Transaction successful",
+                });
               } catch (err: any) {
                 //Reverting the transaction if anything went wrong
 
@@ -211,6 +223,44 @@ export const sendFunds = async (req: Request, res: Response) => {
           }
         } else {
           throw Error("Insufficient funds");
+        }
+      } else {
+        throw Error("Invalid password");
+      }
+    } else {
+      throw Error("Email not found");
+    }
+  } catch (err: any) {
+    let errorMessage = handleError(err);
+    res.json({
+      status: "error",
+      error: errorMessage,
+    });
+  }
+};
+
+export const getTransactions = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  let client = await user.findOne({ email });
+
+  try {
+    if (client) {
+      if (password === client?.password) {
+        let transactionHistory = await transactions.find({
+          emails: { $in: [email] },
+        });
+
+        if (transactionHistory) {
+          res.json({
+            status: "success",
+            data: transactionHistory,
+          });
+        } else {
+          res.json({
+            status: "failed",
+            error: "couldnt fetch transactions",
+          });
         }
       } else {
         throw Error("Invalid password");
