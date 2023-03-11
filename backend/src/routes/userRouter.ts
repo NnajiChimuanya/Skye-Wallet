@@ -129,3 +129,100 @@ export const searchById = (req: Request, res: Response) => {
       });
     });
 };
+
+export const sendFunds = async (req: Request, res: Response) => {
+  let { email, password, recipientId, amount } = req.body;
+  amount = Number(amount);
+
+  let client = await user.findOne({ email });
+
+  try {
+    if (client) {
+      if (password === client?.password) {
+        client.balance = Number(client.balance);
+        if (client.balance >= amount) {
+          //Searching for the recipient Id
+          let recipient = await user.findOne({
+            paymentId: { $in: [recipientId] },
+          });
+
+          if (recipient) {
+            recipient.balance = Number(recipient.balance);
+
+            //Ensuring the there is no self tranfers
+            if (recipient.email !== client.email) {
+              client.balance = client.balance - amount;
+              recipient.balance = recipient.balance + amount;
+
+              client
+                .save()
+                .then((data) => {
+                  console.log(`${data.email} sent ${amount} to ${recipientId}`);
+                })
+                .catch((err: any) => {
+                  let errorMessage = handleError(err);
+                  res.json({
+                    status: "failed",
+                    error: errorMessage,
+                  });
+                });
+
+              try {
+                recipient
+                  .save()
+                  .then((data) => {
+                    console.log(
+                      `${recipientId} has recieved ${amount} from ${email}`
+                    );
+                    res.json({
+                      status: "success",
+                      message: "Transaction successful",
+                    });
+                  })
+                  .catch((err: any) => {
+                    let errorMessage = handleError(err);
+                    res.json({
+                      status: "failed",
+                      error: errorMessage,
+                    });
+                  });
+              } catch (err: any) {
+                //Reverting the transaction if anything went wrong
+
+                client.balance = client.balance + amount;
+                client.save();
+                let errorMessage = handleError(err);
+                res.json({
+                  status: "failed",
+                  error: errorMessage,
+                });
+              }
+            } else {
+              res.json({
+                status: "failed",
+                error: "Self transfer detected",
+              });
+            }
+          } else {
+            res.json({
+              status: "error",
+              error: "User not found",
+            });
+          }
+        } else {
+          throw Error("Insufficient funds");
+        }
+      } else {
+        throw Error("Invalid password");
+      }
+    } else {
+      throw Error("Email not found");
+    }
+  } catch (err: any) {
+    let errorMessage = handleError(err);
+    res.json({
+      status: "error",
+      error: errorMessage,
+    });
+  }
+};

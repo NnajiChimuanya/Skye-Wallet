@@ -30,6 +30,9 @@ const handleError = (err) => {
     if (err.message === "Id does not exist") {
         error = "Id does not exist";
     }
+    if (err.message === "Insufficient funds") {
+        error = "Insufficient funds";
+    }
     return error;
 };
 exports.handleError = handleError;
