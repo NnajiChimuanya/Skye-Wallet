@@ -28,7 +28,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             balance: 5000,
         });
         if (newUser) {
-            res.send(newUser);
+            res.json(newUser);
         }
         else {
             res.json({

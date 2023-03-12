@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import user from "../model/UserModel";
-import IUser from "../interface/UserInterface";
 import { handleError } from "../utils/ErrorHandler";
 import { paymentIdGenerator } from "../utils/paymentIdGenerator";
 
@@ -18,7 +17,7 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     if (newUser) {
-      res.send(newUser);
+      res.json(newUser);
     } else {
       res.json({
         error: "Error occurred while creating user",

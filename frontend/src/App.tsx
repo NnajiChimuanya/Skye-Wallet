@@ -1,25 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from "react";
+import { Routes, Route } from "react-router-dom";
+import SigninPage from "./pages/SigninPage";
+import SignupPage from "./pages/SignupPage";
+import UserPage from "./pages/UserPage";
+import Transactions from "./pages/Transactions";
+import { LendsqrContext } from "./context/Context";
 
 function App() {
+  const { state } = useContext(LendsqrContext);
+  const { loggedIn } = state;
+  console.log(state);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={loggedIn ? <UserPage /> : <SigninPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/signin" element={<SigninPage />} />
+      <Route path="/transactions" element={<Transactions />} />
+    </Routes>
   );
 }
 

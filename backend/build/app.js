@@ -8,9 +8,11 @@ const os_1 = __importDefault(require("os"));
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const authRouter_1 = __importDefault(require("./routes/authRouter"));
-const userRouter_1 = __importDefault(require("./controller/userRouter"));
+const userRouter_1 = __importDefault(require("./routes/userRouter"));
 if (cluster_1.default.isMaster) {
     const cpus = os_1.default.cpus().length;
     console.log(`Forking for ${cpus}`);
@@ -30,6 +32,12 @@ else {
     const app = (0, express_1.default)();
     const port = process.env.PORT || 3001;
     app.use(express_1.default.json());
+    app.use((0, cookie_parser_1.default)());
+    app.use((0, cors_1.default)({
+        origin: "http://localhost:3000",
+        methods: "GET, POST, PUT, DELETE, OPTIONS",
+        credentials: true,
+    }));
     app.get("/", (req, res) => {
         console.log("Skye Wallet user microservice");
         res.send("Skye Wallet user microservice");
