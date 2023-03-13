@@ -2,23 +2,27 @@ import React, { createContext, useReducer } from "react";
 
 type InitialState = typeof initalState;
 
-type Action =
-  | {
-      type: "SET_LOGIN";
-      payload: boolean;
-    }
-  | {
-      type: "SET_SHOW_SIDEBAR";
-      payload: boolean;
-    };
+type Action = {
+  type: "SET_LOGIN";
+  payload: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+    paymentId: string[];
+  };
+};
 
 interface ContextProviderProps {
   children: React.ReactNode;
 }
 
 const initalState = {
-  loggedIn: false,
-  showSidebar: false,
+  name: "",
+  email: "",
+  phoneNumber: "",
+  password: "",
+  paymentId: [""],
 };
 
 const reducer = (state: InitialState, action: Action) => {
@@ -28,12 +32,11 @@ const reducer = (state: InitialState, action: Action) => {
     case "SET_LOGIN":
       return {
         ...state,
-        loggedIn: payload,
-      };
-    case "SET_SHOW_SIDEBAR":
-      return {
-        ...state,
-        showSidebar: payload,
+        name: payload.name,
+        email: payload.email,
+        phoneNumber: payload.phoneNumber,
+        password: payload.password,
+        paymentId: payload.paymentId,
       };
 
     default:
@@ -41,16 +44,18 @@ const reducer = (state: InitialState, action: Action) => {
   }
 };
 
-export const LendsqrContext = createContext<{
+export const SkyeWalletContext = createContext<{
   state: InitialState;
   dispatch: React.Dispatch<Action>;
 }>({ state: initalState, dispatch: () => {} });
 
-export const LendsqrContextProvider = ({ children }: ContextProviderProps) => {
+export const SkyeWalletContextProvider = ({
+  children,
+}: ContextProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initalState);
   return (
-    <LendsqrContext.Provider value={{ state, dispatch }}>
+    <SkyeWalletContext.Provider value={{ state, dispatch }}>
       {children}
-    </LendsqrContext.Provider>
+    </SkyeWalletContext.Provider>
   );
 };

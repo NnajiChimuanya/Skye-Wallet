@@ -4,15 +4,15 @@ import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import UserPage from "./pages/UserPage";
 import Transactions from "./pages/Transactions";
-import { LendsqrContext } from "./context/Context";
+import { SkyeWalletContext } from "./context/Context";
 
 function App() {
-  const { state } = useContext(LendsqrContext);
-  const { loggedIn } = state;
-  console.log(state);
+  const { state } = useContext(SkyeWalletContext);
+  const { email } = state;
+
   return (
     <Routes>
-      <Route path="/" element={loggedIn ? <UserPage /> : <SigninPage />} />
+      <Route path="/" element={email !== "" ? <UserPage /> : <SigninPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/signin" element={<SigninPage />} />
       <Route path="/transactions" element={<Transactions />} />

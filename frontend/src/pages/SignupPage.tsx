@@ -1,9 +1,10 @@
 import React, { useState, useContext } from "react";
-import { LendsqrContext } from "../context/Context";
+import { SkyeWalletContext } from "../context/Context";
 import { Link, useNavigate } from "react-router-dom";
 import instance from "../Axios";
 
 const SignupPage = () => {
+  const { dispatch } = useContext(SkyeWalletContext);
   const [name, setName] = useState<string | number>("");
   const [email, setEmail] = useState<string | number>("");
   const [password, setPassword] = useState<string | number>("");
@@ -11,14 +12,14 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] =
     useState<React.SetStateAction<boolean>>(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
   //toggle password
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const navigate = useNavigate();
-
+  //handle sign up function
   const handleSignup = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
@@ -33,15 +34,8 @@ const SignupPage = () => {
       .post("/auth/signup", data)
       .then((res) => {
         if (!res.data.error) {
-          localStorage.setItem("name", res.data.name);
-          localStorage.setItem("email", res.data.email);
-          localStorage.setItem("password", res.data.password);
-          localStorage.setItem(
-            "phoneNumber",
-            JSON.stringify(res.data.phoneNumber)
-          );
-          localStorage.setItem("paymentId", JSON.parse(res.data.paymentId));
-          navigate("/user");
+          dispatch({ type: "SET_LOGIN", payload: res.data });
+          navigate("/");
         } else {
           setErrorMessage(res.data.error);
         }

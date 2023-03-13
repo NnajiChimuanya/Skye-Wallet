@@ -1,12 +1,26 @@
-import React, { useState, useContext, useEffect } from "react";
-import { LendsqrContext } from "../context/Context";
+import React, { useContext } from "react";
+import { SkyeWalletContext } from "../context/Context";
 
 const UserPage = () => {
-  const { state } = useContext(LendsqrContext);
-  const { loggedIn } = state;
-  console.log(loggedIn);
+  const { state } = useContext(SkyeWalletContext);
+  const { name, email, phoneNumber, paymentId } = state;
 
-  return <div>Heyyyyyyyyyyyyyyy</div>;
+  return (
+    <div>
+      <h2>Name : {name}</h2>
+      <h4>
+        <i>email : {email}</i>
+      </h4>
+      <h4>phoneNumber : {phoneNumber}</h4>
+
+      <div>
+        <h3>Payment Ids</h3>
+        {paymentId.map((id, key) => (
+          <h5 key={key}>{id}</h5>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default UserPage;

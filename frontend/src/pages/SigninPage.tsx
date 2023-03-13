@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { LendsqrContext } from "../context/Context";
-import { Link, useNavigate } from "react-router-dom";
+import { SkyeWalletContext } from "../context/Context";
+import { Link } from "react-router-dom";
 import instance from "../Axios";
 
 const SigninPage = () => {
-  const { state, dispatch } = useContext(LendsqrContext);
+  const { dispatch } = useContext(SkyeWalletContext);
   const [email, setEmail] = useState<string | number>("");
   const [password, setPassword] = useState<string | number>("");
   const [showPassword, setShowPassword] =
@@ -18,6 +18,16 @@ const SigninPage = () => {
   //Sending the request
   const handleLogin = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
+
+    let data = { email, password };
+
+    instance.post("/auth/signin", data).then((res) => {
+      if (!res.data.error) {
+        dispatch({ type: "SET_LOGIN", payload: res.data });
+      } else {
+        setErrorMessage(res.data.error);
+      }
+    });
   };
 
   return (
@@ -59,12 +69,7 @@ const SigninPage = () => {
             </Link>
           </p>
 
-          <button
-            onClick={(e: React.ChangeEvent<any>) => {
-              dispatch({ type: "SET_LOGIN", payload: true });
-            }}
-            className="button"
-          >
+          <button onClick={handleLogin} className="button">
             LOG IN
           </button>
         </form>
