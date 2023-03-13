@@ -17,5 +17,5 @@ userRouter.post("/searchById", searchById);
 
 userRouter.post("/sendFunds", sendFunds);
 
-userRouter.get("/getTransactions", getTransactions);
+userRouter.post("/getTransactions", getTransactions);
 export default userRouter;

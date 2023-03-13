@@ -10,5 +10,5 @@ userRouter.post("/generateNewId", userController_1.generateNewId);
 userRouter.post("/deleteId", userController_1.deleteId);
 userRouter.post("/searchById", userController_1.searchById);
 userRouter.post("/sendFunds", userController_1.sendFunds);
-userRouter.get("/getTransactions", userController_1.getTransactions);
+userRouter.post("/getTransactions", userController_1.getTransactions);
 exports.default = userRouter;

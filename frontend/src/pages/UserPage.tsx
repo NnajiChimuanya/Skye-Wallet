@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { SkyeWalletContext } from "../context/Context";
+import { Link } from "react-router-dom";
 
 const UserPage = () => {
   const { state } = useContext(SkyeWalletContext);
@@ -19,6 +20,13 @@ const UserPage = () => {
           <h5 key={key}>{id}</h5>
         ))}
       </div>
+
+      <p>
+        y
+        <Link className="link" to="/transactions">
+          View transaction history
+        </Link>
+      </p>
     </div>
   );
 };
